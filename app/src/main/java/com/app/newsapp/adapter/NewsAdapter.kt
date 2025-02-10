@@ -7,9 +7,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.app.newsapp.model.Article
 import com.app.newsapp.model.NewsItem
+import com.bumptech.glide.Glide
 
-class NewsAdapter(private val newsList: List<NewsItem>) : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
+class NewsAdapter(private val newsList: List<Article>) : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
 
     class NewsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val newsTitle: TextView = view.findViewById(R.id.newsTitle)
@@ -24,9 +26,13 @@ class NewsAdapter(private val newsList: List<NewsItem>) : RecyclerView.Adapter<N
 
     override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
         val news = newsList[position]
-        holder.newsTitle.text = news.title
-        holder.newsDescription.text = news.description
-        holder.newsImage.setImageResource(news.image)
+        holder.newsTitle.text = news.title ?: "No Title"
+        holder.newsDescription.text = news.description ?: "No Description"
+
+        Glide.with(holder.itemView.context)
+            .load(news.urlToImage)
+            .placeholder(R.drawable.ic_launcher_background)
+            .into(holder.newsImage)
     }
 
     override fun getItemCount() = newsList.size
