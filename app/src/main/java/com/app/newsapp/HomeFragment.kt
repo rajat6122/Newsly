@@ -5,22 +5,27 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.newsapp.adapter.NewsAdapter
 import com.app.newsapp.model.Article
-import com.app.newsapp.model.NewsItem
 import com.app.newsapp.model.NewsResponse
 import com.app.newsapp.retrofitapi.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.http.Query
 
 class HomeFragment : Fragment() {
 
     private val newsList = mutableListOf<Article>()
     private lateinit var adapter: NewsAdapter
+    private lateinit var searchView: SearchView
+    private lateinit var categorySpinner: Spinner
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,18 +33,25 @@ class HomeFragment : Fragment() {
     ): View {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
+        searchView = view.findViewById(R.id.searchView)
+        categorySpinner = view.findViewById(R.id.categorySpinner)
 
         adapter = NewsAdapter(newsList)
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter // Set adapter
 
-        fetchNews()
+
+        //fetchNews()
+        fetchNewsByQuery("top-headlines")
+        setUpSearchView()
+        setUpCategorySpinner()
+
         return view
     }
 
-    private fun fetchNews() {
-        RetrofitClient.instance.getNews("bitcoin").enqueue(object :
+    private fun fetchNewsByQuery(query: String) {
+        RetrofitClient.instance.searchNews(query).enqueue(object :
             Callback<NewsResponse> {
             override fun onResponse(call: Call<NewsResponse>, response: Response<NewsResponse>) {
                 if (response.isSuccessful && response.body() != null) {
@@ -58,24 +70,31 @@ class HomeFragment : Fragment() {
         )
     }
 
-//    private fun getSampleNews(): List<NewsItem> {
-//        return listOf(
-//            NewsItem(
-//                "Breaking News",
-//                "This is a sample news description",
-//                R.drawable.ic_launcher_background
-//            ),
-//            NewsItem(
-//                "Political News",
-//                "Latest updates on Politics",
-//                R.drawable.ic_launcher_background
-//            ),
-//            NewsItem(
-//                "Tech News",
-//                "Latest updates on technology",
-//                R.drawable.ic_launcher_background
-//            ),
-//            NewsItem("Bitcoin News", "Latest updates on Bitcoin", R.drawable.ic_launcher_background)
-//        )
-//    }
+    private fun setUpCategorySpinner() {
+        val categories = listOf("General", "Business", "Technology", "Entertainment", "Health", "Science");
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            categories
+        )
+        categorySpinner.adapter = adapter
+
+
+    }
+
+    private fun setUpSearchView() {
+        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if(!query.isNullOrEmpty()) {
+                    fetchNewsByQuery(query)
+                }
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return false
+            }
+
+        })
+    }
 }
