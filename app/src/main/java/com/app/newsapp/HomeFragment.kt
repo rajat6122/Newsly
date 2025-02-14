@@ -36,7 +36,7 @@ class HomeFragment : Fragment() {
         searchView = view.findViewById(R.id.searchView)
         categorySpinner = view.findViewById(R.id.categorySpinner)
 
-        adapter = NewsAdapter(newsList)
+        adapter = NewsAdapter(requireContext(), newsList)
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter // Set adapter
