@@ -1,7 +1,18 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
 }
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+
+// Correct way to fetch API key from local.properties
+val apiKey = localProperties.getProperty("NEWS_API_KEY") ?: ""
 
 android {
     namespace = "com.app.newsapp"
@@ -13,9 +24,13 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
+        buildFeatures.buildConfig = true
+
+        buildConfigField("String", "NEWS_API_KEY", "\"$apiKey\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+
 
     buildTypes {
         release {

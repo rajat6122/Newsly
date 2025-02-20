@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
@@ -69,6 +70,25 @@ class HomeFragment : Fragment() {
 
         )
     }
+    private fun fetchNewsByCategory(category: String) {
+        RetrofitClient.instance.searchNews(category).enqueue(object :
+            Callback<NewsResponse> {
+            override fun onResponse(call: Call<NewsResponse>, response: Response<NewsResponse>) {
+                if (response.isSuccessful && response.body() != null) {
+                    newsList.clear()
+                    newsList.addAll(response.body()!!.articles)
+                    adapter.notifyDataSetChanged()
+                }
+            }
+
+            override fun onFailure(call: Call<NewsResponse>, t: Throwable) {
+                Toast.makeText(requireContext(), "Failed to fetch news", Toast.LENGTH_SHORT).show()
+            }
+
+        }
+
+        )
+    }
 
     private fun setUpCategorySpinner() {
         val categories = listOf("General", "Business", "Technology", "Entertainment", "Health", "Science");
@@ -79,7 +99,16 @@ class HomeFragment : Fragment() {
         )
         categorySpinner.adapter = adapter
 
+        categorySpinner.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val selectedCategory = categories[position]
+                fetchNewsByCategory(selectedCategory.toLowerCase())
+            }
 
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // Do nothing
+            }
+        })
     }
 
     private fun setUpSearchView() {

@@ -1,29 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".HomeFragment"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    tools:context=".HomeFragment"
+    android:background="@drawable/img_1">
 
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/searchView"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:queryHint="Search News.."/>
+        android:text="Newsly"
+        android:gravity="center"
+        android:textSize="24sp"
+        android:textColor="#FF0000"
+         android:textStyle="bold"/>
 
-    <Spinner
-        android:id="@+id/categorySpinner"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="8dp"
+        app:cardElevation="4dp"
+        app:cardCornerRadius="50dp"
+        app:cardBackgroundColor="@android:color/transparent">
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/rounded_background"
+        app:queryHint="Search News.." />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:cardElevation="4dp"
+        app:cardCornerRadius="50dp"
+        app:cardBackgroundColor="@android:color/transparent">
+
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/categorySpinner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbarSize="@dimen/material_emphasis_medium"
+            android:background="@drawable/rounded_background" />
+    </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="8dp"/>
+        android:layout_height="0dp"
+    android:layout_marginTop="8dp"
+    android:layout_weight="1" />
 
 </LinearLayout>
