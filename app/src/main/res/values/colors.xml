@@ -4,6 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="light_grey">#D3D3D3</color> <!-- Light Grey -->
     <color name="soft_grey">#F0F0F0</color> <!-- Softer Grey -->
+    <color name="dark_grey">#181818</color> <!-- Softer Grey -->
 
 
 </resources>
